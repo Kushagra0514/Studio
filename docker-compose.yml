@@ -13,6 +13,9 @@ services:
     environment:
       - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY:-local_dummy_key}
       - FIRECRAWL_API_URL=${FIRECRAWL_API_URL:-http://host.docker.internal:3002}
+    env_file:
+      - path: .env
+        required: false
     restart: unless-stopped
 
   frontend:

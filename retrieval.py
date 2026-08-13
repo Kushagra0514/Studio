@@ -11,7 +11,9 @@ class RetrievalPipeline:
         if chat_history is None:
             chat_history = []
             
-        llm_client = Groq(api_key=groq_api_key) if groq_api_key else Groq()
+        # Use the header key if provided, otherwise let Groq() read GROQ_API_KEY from env
+        api_key = groq_api_key.strip() if groq_api_key else None
+        llm_client = Groq(api_key=api_key) if api_key else Groq()
             
         # 1. Router / Rewriter (Milestone 6)
         history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history[-5:]])
