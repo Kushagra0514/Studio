@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./qdrant_data:/app/qdrant_data
+      - ./documents:/app/documents
+      - ./chat_history.json:/app/chat_history.json
+    environment:
+      - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY:-local_dummy_key}
+      - FIRECRAWL_API_URL=${FIRECRAWL_API_URL:-http://host.docker.internal:3002}
+      # If the user runs Firecrawl locally, host.docker.internal allows this backend to talk to it
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

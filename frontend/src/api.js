@@ -53,13 +53,13 @@ export const api = {
   },
   
   getHistory: async () => {
-    const res = await fetch(`${API_BASE}/history`);
+    const res = await fetch(`/api/history`);
     if (!res.ok) return [];
     return res.json();
   },
   
   saveHistory: async (history) => {
-    await fetch(`${API_BASE}/history`, {
+    await fetch(`/api/history`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(history),
