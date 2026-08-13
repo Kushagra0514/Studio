@@ -5,8 +5,10 @@ import EmptyState from './components/EmptyState';
 import ResponseArea from './components/ResponseArea';
 import SourcePanel from './components/SourcePanel';
 import UploadModal from './components/UploadModal';
+import ApiKeyModal from './components/ApiKeyModal';
 
 export default function App() {
+  const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [documents, setDocuments] = useState([]);
   
@@ -167,6 +169,10 @@ export default function App() {
         setChatHistory(history);
       }
     }).catch(err => console.error("Failed to load history", err));
+    
+    if (!localStorage.getItem('groq_api_key')) {
+      setIsApiKeyModalOpen(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -417,6 +423,13 @@ export default function App() {
         isOpen={isUploadOpen} 
         onClose={() => setIsUploadOpen(false)} 
         onUploadStart={handleUploadStart}
+      />
+      <ApiKeyModal 
+        isOpen={isApiKeyModalOpen}
+        onSubmit={(key) => {
+          localStorage.setItem('groq_api_key', key);
+          setIsApiKeyModalOpen(false);
+        }}
       />
     </div>
   );

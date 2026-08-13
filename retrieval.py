@@ -6,11 +6,12 @@ from storage import VectorStorage
 class RetrievalPipeline:
     def __init__(self, storage: VectorStorage):
         self.storage = storage
-        self.llm_client = Groq()
 
-    def answer_question(self, question: str, chat_history: list = None) -> dict:
+    def answer_question(self, question: str, chat_history: list = None, groq_api_key: str = None) -> dict:
         if chat_history is None:
             chat_history = []
+            
+        llm_client = Groq(api_key=groq_api_key) if groq_api_key else Groq()
             
         # 1. Router / Rewriter (Milestone 6)
         history_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history[-5:]])
@@ -30,7 +31,7 @@ class RetrievalPipeline:
         
         print("Calling LLM Router (openai/gpt-oss-20b)...")
         try:
-            router_response = self.llm_client.chat.completions.create(
+            router_response = llm_client.chat.completions.create(
                 model="openai/gpt-oss-20b",
                 messages=[
                     {"role": "system", "content": router_prompt},
@@ -57,7 +58,7 @@ class RetrievalPipeline:
                 conv_msgs.append(msg)
             conv_msgs.append({"role": "user", "content": question})
             
-            conv_response = self.llm_client.chat.completions.create(
+            conv_response = llm_client.chat.completions.create(
                 model="openai/gpt-oss-20b",
                 messages=conv_msgs,
                 temperature=0.7
@@ -147,7 +148,7 @@ class RetrievalPipeline:
         user_message = f"Context information is below.\n\n{context_str}\n\nQuestion: {search_query}"
         
         print("Calling LLM (openai/gpt-oss-120b)...")
-        response = self.llm_client.chat.completions.create(
+        response = llm_client.chat.completions.create(
             model="openai/gpt-oss-120b",
             messages=[
                 {"role": "system", "content": system_prompt},

@@ -1,8 +1,12 @@
 export const api = {
   async ask(question, chatHistory = []) {
+    const groqApiKey = localStorage.getItem('groq_api_key') || '';
     const res = await fetch('/api/ask', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Groq-Api-Key': groqApiKey
+      },
       body: JSON.stringify({ question, chat_history: chatHistory })
     });
     if (!res.ok) throw new Error('Failed to fetch answer');
