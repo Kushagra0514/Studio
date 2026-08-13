@@ -200,7 +200,7 @@ def delete_document(filename: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-HISTORY_FILE = "chat_history.json"
+HISTORY_FILE = "qdrant_data/chat_history.json"
 
 @app.get("/api/history")
 def get_history():

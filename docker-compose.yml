@@ -10,7 +10,6 @@ services:
     volumes:
       - ./qdrant_data:/app/qdrant_data
       - ./documents:/app/documents
-      - ./chat_history.json:/app/chat_history.json
     env_file:
       - .env
     restart: unless-stopped
