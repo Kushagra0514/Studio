@@ -1,0 +1,9 @@
+docling>=2.0.0
+qdrant-client[fastembed]
+openai
+groq
+pydantic
+python-dotenv
+fastapi
+uvicorn
+python-multipart
