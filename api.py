@@ -3,7 +3,7 @@ import shutil
 import tempfile
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -64,14 +64,17 @@ class DocumentInfo(BaseModel):
 # API Endpoints
 # ========================================
 @app.post("/api/ask", response_model=AskResponse)
-def ask_question(req: AskRequest):
+def ask_question(req: AskRequest, request: Request):
     """Ask a question against the ingested documents."""
     if not req.question.strip():
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
     
+    # Extract the Groq API key from the request header
+    groq_api_key = request.headers.get("x-groq-api-key")
+    
     # Generate the answer and get sources (routing + search + lost in middle)
     chat_history_dicts = [{"role": msg.role, "content": msg.content} for msg in req.chat_history]
-    result = pipeline.answer_question(req.question, chat_history_dicts)
+    result = pipeline.answer_question(req.question, chat_history_dicts, groq_api_key=groq_api_key)
     
     # Build the sources list for the frontend
     sources = []
@@ -114,6 +117,8 @@ def ingest_file(file: UploadFile = File(...)):
             "chunks": len(chunks)
         }
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         os.unlink(tmp_path)
@@ -215,7 +220,6 @@ def get_history():
             return []
     return []
 
-from fastapi import Request
 
 @app.post("/api/history")
 async def save_history(request: Request):
