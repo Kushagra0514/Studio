@@ -10,6 +10,8 @@ services:
     volumes:
       - ./qdrant_data:/app/qdrant_data
       - ./documents:/app/documents
+      - ./model_cache:/root/.cache
+      - ./model_local:/root/.local
     environment:
       - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY:-local_dummy_key}
       - FIRECRAWL_API_URL=${FIRECRAWL_API_URL:-http://host.docker.internal:3002}
