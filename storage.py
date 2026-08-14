@@ -116,3 +116,8 @@ class VectorStorage:
             ),
             wait=True
         )
+
+    def delete_all_documents(self):
+        """Wipes the entire collection and recreates it empty."""
+        self.client.delete_collection(self.collection_name)
+        self._init_collection()

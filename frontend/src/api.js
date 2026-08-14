@@ -41,7 +41,7 @@ export const api = {
   },
 
   async deleteDocument(filename) {
-    const res = await fetch(`/api/documents/${encodeURIComponent(filename)}`, {
+    const res = await fetch(`/api/document?filename=${encodeURIComponent(filename)}`, {
       method: 'DELETE'
     });
     if (!res.ok) throw new Error('Failed to delete document');

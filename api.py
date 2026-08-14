@@ -196,7 +196,7 @@ def delete_all_documents():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.delete("/api/documents/{filename:path}")
+@app.delete("/api/document")
 def delete_document(filename: str):
     """Delete all chunks for a given document."""
     try:
