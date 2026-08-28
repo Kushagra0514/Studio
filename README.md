@@ -44,10 +44,9 @@ Browser
 ```text
 backend/       FastAPI package, dependency files, and backend Dockerfile
 frontend/      React source, Nginx configuration, and frontend Dockerfile
-scripts/       Command-line client and Windows development launcher
+scripts/       Command-line client
 evals/         Dataset generation and evaluation utilities
 infra/         Optional local Firecrawl Compose stack
-prototypes/    Reference-only UI prototype
 tests/         Offline backend tests
 data/          Ignored runtime data; created automatically
 ```
