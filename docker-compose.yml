@@ -1,23 +1,28 @@
-version: '3.8'
-
 services:
   backend:
     build:
-      context: .
-      dockerfile: backend.Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
-      - ./qdrant_data:/app/qdrant_data
-      - ./documents:/app/documents
-      - ./model_cache:/root/.cache
-      - ./model_local:/root/.local
+      - ./data/qdrant:/app/data/qdrant
+      - ./data/chat:/app/data/chat
+      - ./data/documents:/app/data/documents
+      - ./data/models/cache:/root/.cache
+      - ./data/models/local:/root/.local
     environment:
-      - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY:-local_dummy_key}
-      - FIRECRAWL_API_URL=${FIRECRAWL_API_URL:-http://host.docker.internal:3002}
-    env_file:
-      - path: .env
-        required: false
+      STUDIO_DATA_DIR: /app/data
+      STUDIO_MAX_UPLOAD_BYTES: ${STUDIO_MAX_UPLOAD_BYTES:-52428800}
+      FIRECRAWL_API_KEY: ${FIRECRAWL_API_KEY:-local_dummy_key}
+      FIRECRAWL_API_URL: ${FIRECRAWL_API_URL:-http://host.docker.internal:3002}
+    env_file: .env
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=5)"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 10m
     restart: unless-stopped
 
   frontend:
@@ -25,7 +30,8 @@ services:
       context: ./frontend
       dockerfile: frontend.Dockerfile
     ports:
-      - "80:80"
+      - "127.0.0.1:80:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped

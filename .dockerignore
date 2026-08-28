@@ -1,8 +1,0 @@
-frontend/
-venv/
-qdrant_data/
-__pycache__/
-*.pyc
-.env
-.git
-.agents/

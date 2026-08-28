@@ -1,5 +1,9 @@
+"""Shared data models for the Studio backend."""
+
+from typing import Any, Dict
+
 from pydantic import BaseModel, Field
-from typing import Dict, Any, List
+
 
 class Chunk(BaseModel):
     id: str

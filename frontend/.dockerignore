@@ -1,3 +1,12 @@
-node_modules
-dist
-.env
+**
+!.dockerignore
+!frontend.Dockerfile
+!package.json
+!package-lock.json
+!index.html
+!vite.config.js
+!nginx.conf
+!public/
+!public/**
+!src/
+!src/**
